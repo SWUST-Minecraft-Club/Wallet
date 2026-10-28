@@ -1,0 +1,74 @@
+# Wallet（主菜单里的钱包）
+#
+# local：本地多币种；website：全部官网；hybrid：按 currencies.<code>.source 分流。
+backend: local
+
+currencies:
+  coin:
+    source: local
+    name: 金币
+    symbol: 金币
+    scale: 2
+    enabled: true
+    transfer-enabled: true
+
+# 双来源示例（将 backend 改为 hybrid 后，可在 currencies 下添加以下条目）：
+# emerald:
+#   source: website
+#   website-code: EMERALD
+#   name: 星空晶
+#   symbol: 星空晶
+#   scale: 0
+#   enabled: true
+#   transfer-enabled: true
+# code、名称、精度均可自行配置；官网币种的 scale 必须与官网一致。
+# website-code 可与本服 code 不同；同一官网币种只能映射一次。未声明的币种不会自动出现在 hybrid 中。
+
+# 标准 Vault 每个经济服务只能提供一个主币种；其他币种继续通过 WalletApi 与钱包界面使用。
+vault:
+  enabled: true
+  currency: coin
+
+# 下面的官网配置用于 website / hybrid 的官网币种，以及 /wallet migrate-site 一次性迁入。
+# 迁入仅处理 source: local 的币种，按 code 对应官网，保持相同 scale。
+
+# 官网地址（不要带结尾斜杠）。接口前缀固定为 /api/plugins/yudream-wallet
+base-url: "https://www.swustmc.cn"
+
+# 官网 API Key：需要 plugin:yudream-wallet:manage 权限
+# （余额查询、流水、加/减货币都在管理端接口下）。view 权限只能读货币种类。
+api-key: ""
+
+# 本服启用的货币 code 初始列表（游戏内管理开关保存到 assets.yml，后者优先）。
+# local/hybrid 使用 currencies 的本服 code，website 使用官网 code；留空 = 所有 enabled 币种。
+assets: []
+
+# 缓存时间（秒）：货币种类 / 余额。菜单每秒重绘，只读缓存，不阻塞。
+assets-cache-seconds: 60
+balance-cache-seconds: 30
+
+# 单次 HTTP 超时（毫秒）
+request-timeout-ms: 8000
+
+# 玩家映射方式：auto（先 UUID 绑定再名字）/ uuid / name
+match-mode: auto
+
+# 流水页：第 1~5 行放流水，每页条数（最大 45）
+history-page-size: 45
+
+# 管理员玩家列表页：每页玩家数（最大 45）
+admin-page-size: 45
+
+# 时间显示时区（流水时间）。默认东 8 区，与官网一致。
+timezone: "Asia/Shanghai"
+
+# ---------------------------- 本地测试模式（默认关闭） ----------------------------
+# enabled: true 时完全不连官网：余额与流水只存本机（plugins/Wallet/test-ledger.yml），
+# 货币为下面自定义的测试币，新玩家首次出现时按 start-balance 发起始金额。
+# 仅供本地联调 / 测试服使用；**上线前务必改回 false**（启动时会打醒目警告）。
+test-mode:
+  enabled: false
+  currency-code: TEST
+  currency-name: 测试币
+  currency-symbol: "✦"
+  start-balance: 100000

@@ -1,0 +1,30 @@
+name: Wallet
+version: '${version}'
+main: com.example.wallet.WalletPlugin
+api-version: '26.3'
+# 声明支持 Folia；没有这一项的插件会被 Folia 拒绝加载
+folia-supported: true
+description: 本地与官网多币种分流钱包、Vault 主币种与旧官网一次性迁入
+authors: ["SWUSTMC Club"]
+website: https://github.com/SWUST-Minecraft-Club/Wallet
+
+# 软依赖：没有 MainMenu 时插件正常加载并对外提供 WalletApi，只是不注册菜单功能
+dependencies:
+  server:
+    MainMenu:
+      load: BEFORE
+      required: false
+    Vault:
+      load: BEFORE
+      required: false
+
+permissions:
+  wallet.admin:
+    description: 允许打开钱包管理界面（玩家货币 / 货币类型）
+    default: op
+  wallet.adjust:
+    description: 允许 /wallet add、take、set 和 /walletin、/walletout 调整玩家货币
+    default: op
+  wallet.migrate:
+    description: 允许从旧 YuDream 官网一次性迁入本服已知玩家的余额及查看迁入状态
+    default: op
